@@ -3,7 +3,7 @@ package main
 import (
 	"context"
 	"encoding/json"
-	"fmt"
+	"fmt"	
 	"log"
 	"net"
 	"net/http"
@@ -35,7 +35,11 @@ func executeCommandWithTimeout(name string, args ...string) error {
 
 	cmd := exec.CommandContext(ctx, name, args...)
 	cmd.Dir = os.TempDir()
-	return cmd.Run()
+	output, err := cmd.CombinedOutput() // Capture stdout and stderr
+	if err != nil {
+		log.Printf("Command failed: %v\nOutput:\n%s", err, string(output))
+	}
+	return err
 }
 
 func handleRegistration(w http.ResponseWriter, req *http.Request) {
@@ -113,7 +117,7 @@ func handleExec(w http.ResponseWriter, r *http.Request) {
 	defer f.Close()
 	f.ReadFrom(body)
 
-	err = executeCommandWithTimeout("go", "build", "-ldflags", "-s -w", "-o", binName, fname)
+	err = executeCommandWithTimeout("go", "build", "-o", binName, fname)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		fmt.Fprintln(w, "Failed to compile payload!")
