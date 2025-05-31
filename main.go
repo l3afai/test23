@@ -37,7 +37,7 @@ func executeCommandWithTimeout(name string, args ...string) error {
 	cmd.Dir = os.TempDir()
 	output, err := cmd.CombinedOutput() // Capture stdout and stderr
 	if err != nil {
-		//log.Printf("Command failed: %v\nOutput:\n%s", err, string(output))
+		log.Printf("Command failed: %v\nOutput:\n%s", err, string(output))
 	}
 	return err
 }
@@ -159,7 +159,7 @@ func adminOnly(next http.HandlerFunc) http.Handler {
 		if !isLocalhost(r) {
 			w.WriteHeader(http.StatusUnauthorized)
 			fmt.Fprintln(w, "Only admins can access this page!")
-			log.printf("Only admins can access this page!")
+			log.Printf("Only admins can access this page!")
 			return
 		}
 		next(w, r)
