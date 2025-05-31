@@ -155,6 +155,7 @@ func adminOnly(next http.HandlerFunc) http.Handler {
 		if !isLocalhost(r) {
 			w.WriteHeader(http.StatusUnauthorized)
 			fmt.Fprintln(w, "Only admins can access this page!")
+			log.printf("Only admins can access this page!")
 			return
 		}
 		next(w, r)
