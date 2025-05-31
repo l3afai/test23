@@ -37,7 +37,7 @@ func executeCommandWithTimeout(name string, args ...string) error {
 	cmd.Dir = os.TempDir()
 	output, err := cmd.CombinedOutput() // Capture stdout and stderr
 	if err != nil {
-		log.Printf("Command failed: %v\nOutput:\n%s", err, string(output))
+		//log.Printf("Command failed: %v\nOutput:\n%s", err, string(output))
 	}
 	return err
 }
